@@ -1,5 +1,10 @@
 class TripleP:
     def __init__(self, stopwords_list: list = None):
+        """
+        in class baraye pish pardazeshe motone farsi sakhte shude ast k bar payeye hazm kar mikonad.
+        :param stopwords_list: shuma mitavanid liste stopword haye khod ra be in class bedahid
+        ya az defult khgode an estefade konid.
+        """
         if stopwords_list is not None:
             self._STOPWORDSLIST = stopwords_list
         from hazm import Normalizer as hazm_normilizer
@@ -53,6 +58,12 @@ class TripleP:
         return sentences_list
 
     def without_stop_words(self, string: str, stopwords_list: list = None) -> str:
+        """
+        ba estefade az in tabe mitavanid mati k darid ra normal va bedone stopword konid.
+        :param string:
+        :param stopwords_list:
+        :return:
+        """
         from .extractor import Stopwords
         if stopwords_list is not None:
             stpws = Stopwords(stopwords_list)
