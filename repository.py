@@ -169,8 +169,8 @@ def _create_dictionary(
         sentences = []
 
         from hazm import POSTagger as hazm_postagger
-        from setting import BASE_DIR, POSTAGGER_MODEL_URL
-        tagger = hazm_postagger(model=POSTAGGER_MODEL_URL)
+        from setting import BASE_DIR
+        tagger = hazm_postagger(model=join(BASE_DIR, 'resources-0.5', 'postagger.model'))
         from hazm import SentenceTokenizer as hazm_sentence_tokenizer
         sent_tokenizer = hazm_sentence_tokenizer()
         from hazm import WordTokenizer as hazm_word_tokenizer
@@ -208,14 +208,14 @@ def _create_dictionary(
         from gensim.models.word2vec import Word2Vec as gensim_word_to_vector
         model = gensim_word_to_vector(
             sentences=sentences,
-            vector_size=1,
+            size=1,
             alpha=0.02,
             window=10,
             min_count=0,
             workers=4,
             min_alpha=0.00001,
             sg=1,
-            epochs=5
+            iter=5
         )
         _dictionary = {}
         _dict4coding = {}
@@ -305,16 +305,16 @@ def code2word(code: str) -> str:
 
 def _create_documents2vectors_model(
         dm=1,
-        vector_size=2 ** 7,
-        window=2 ** 3,
-        alpha=2 ** -6,
-        min_alpha=2 ** -11,
+        vector_size=2**7,
+        window=2**3,
+        alpha=2**-6,
+        min_alpha=2**-11,
         min_count=3,
-        workers=2 ** 2,
-        epochs=2 ** 7,
+        workers=2**2,
+        epochs=2**7,
         dm_mean=0,
         dm_concat=0,
-        dm_tag_count=2 ** 5,
+        dm_tag_count=2**5,
         dbow_words=1,
         file_name='.files/.nvd.model',
 ):

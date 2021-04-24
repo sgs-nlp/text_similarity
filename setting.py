@@ -10,10 +10,6 @@ from repository import (
     _data_tokenize,
 )
 
-DATASETS_URL = '/home/ya_hasan_mojtaba/my_projects/datasets'
-RESOURCES_URL = '/home/ya_hasan_mojtaba/my_projects/resources'
-POSTAGGER_MODEL_URL = join(RESOURCES_URL, 'hazm/resources-0.5/postagger.model')
-
 START_TIME = time()
 
 basicConfig(
@@ -25,8 +21,8 @@ basicConfig(
 BASE_DIR = dirname(__file__)
 
 DATA = _files2csvformat(
-    directory_name=join(DATASETS_URL, 'hamshahri_news/news-corpus'),
-    file_num=10,
+    directory_name=join(BASE_DIR, 'news/news-corpus'),
+    file_num=5,
 )
 
 DICTIONARY, DICTIONARY4CODING, DICTIONARY4DECODING = _create_dictionary()
