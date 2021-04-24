@@ -1,25 +1,50 @@
+from json import loads
+from math import log as logarithm
+from .setting import STOP_WORDS_PATH
+
+
 class Stopwords:
-    def __init__(self, stopwords_list: list = None):
+    def __init__(self, stopwords_list: list = None) -> None:
+        """
+        in kelas baraye modiriyate stop word ha sakhte shude ast k mitavanad list stop word ha ra daryaft konad,
+         ya list pishfarz khod ra stefade konad va ya
+        bar asase ferekanse kalamat dar corpus, list stop word ra besazad.
+        :param stopwords_list: yek listre paythoni shamele stop word haye farsi
+        """
         if stopwords_list is not None:
             self.STOPWORDSLIST = stopwords_list
         else:
-            from json import loads
-            with open('./persian.stopword.json', 'r', encoding='utf-8') as file:
+            with open(STOP_WORDS_PATH, 'r', encoding='utf-8') as file:
                 s = file.read()
                 s = loads(s)
             self.STOPWORDSLIST = s
 
     def is_stopword(self, word: str) -> bool:
+        """
+        dar in tabe bar asase stop word haye tarif shude dar in class moshakas mikonad k
+        kalameye vorodi stop word ast ya na.
+        :param word: kalameye farsi - reshteye pythoni
+        :return: meghdare bargashtiy in tabe be sorate boolean mibashad va moshakhas mikonad k
+         kalameye vorodi stopword ast ya kheyr
+        """
         if word in self.STOPWORDSLIST:
             return True
         return False
+
+    def stopword_extractor_by_ferquency(self, corpus: list) -> list:
+        """
+        in tabe liste pythoniye stopword ra bar asase ferquency kalamat darone corpus moshakhas mikonad.
+        :param corpus: listi shamele tamame document haye mojod
+        :return: list pythoni shamele stopword ha.
+        """
+        pass
 
 
 class Keywords:
     def __init__(self, stopwords_list: list = None, minimum_frequency: float = 0.51,
                  maximum_frequency: float = 1) -> None:
         """
-
+        in kelas modiriyate keyword ha ra anjam midahad.
         :param stopwords_list: list paythoni az stopword ha.
         :param minimum_frequency: adadi beyene sefr va yek,
          kamtarin frquency ehtemali baraye shenasayi kalamate ba arzeshe bishtar.
@@ -38,6 +63,13 @@ class Keywords:
     stopwords_list = []
 
     def by_frequency(self, document: list, func=None) -> list:
+        """
+        estekhraje keyword ha bar asase bedast avardane ferekanse kalamat dar yek matn
+        :param document: yek liste pythoni shamele kalamate darone document(b in sorat document = ['w1','w2', ...]).
+        :param func: dar inja shuma mitavanid tabe mohasebeye ferekans more taeid khod ra entekhab konid,
+        dar hale hazer pishfarz ma az tabe Frequency.normal_tfidf ast.
+        :return: liste pythoni shamele kywords ha.
+        """
         if func is None:
             func = self.frequency_func
         keywords = []
@@ -50,6 +82,13 @@ class Keywords:
 
 class Frequency:
     def __init__(self, stopwords_list: list = None):
+        """
+        mohasebeye ferekanse kalamat dar matn bar asase algorithm haye mokhtalef.
+        :param stopwords_list: ba estefade az in vorodi mitavanid ferekanse kalamate gheyere stopword dar matn ra
+        mohasebe konid.
+        agar in moteghayr ra meghdar dehi nakonid tabe be sorate pishfarz fekanse tamae kalamate mojod dar matn ra
+        mohasebe mikonad.
+        """
         if stopwords_list is not None:
             self._stopwords_list = stopwords_list
 
@@ -57,7 +96,7 @@ class Frequency:
 
     def tfidf(self, document: list) -> dict:
         """
-
+        in tabe az raveshe marofe tfidf baraye bedast avardane ferekanse kalamat estefade mikonad.
         :param document: documenti k be sorate yek string pythoni ast va mikhahim kalamte ba arzeshe an ra estekhraj
             konim.
 
@@ -78,7 +117,7 @@ class Frequency:
                         document_term_frequency[word] += 1 / sum_all_fre
 
         document_tfidf = {}
-        from math import log as logarithm
+
         for (word, tf) in document_term_frequency.items():
             document_tfidf[word] = tf * (logarithm(1 / tf))
 
@@ -86,7 +125,9 @@ class Frequency:
 
     def normal_tfidf(self, document: list) -> dict:
         """
-
+        in tabe az raveshe tfidf baraye pyda kardane ferekanse kalamat estefade mikonad va dar nahayat ba
+        mohasebeye bishtarin ferekanse va kamatarin ferekanse ferekanse kalamat dar matn ra b adadi
+         beyne sefr va yek negasht midahad.
         :param document: documenti k be sorate yek string pythoni ast va mikhahim kalamte ba arzeshe an ra estekhraj
             konim.
 
