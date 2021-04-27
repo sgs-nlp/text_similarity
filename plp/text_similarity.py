@@ -18,6 +18,13 @@ from time import time
 
 class Similarity:
     def __init__(self, data_path: str = None, exist_tags: bool = False):
+        """
+
+        :param data_path: masire dade ha baraye load kardan
+        :param exist_tags: dar sorati k dade ha daraye tag hastand
+        (tag haye ham name har file az document ha ba pasvande .tag)
+        in moteghayer ra barabar ba true gharar midahim
+        """
         self.stpwrds = Stopwords()
         self.kywrds = Keywords(self.stpwrds.STOPWORDSLIST)
         self._load_data(data_path)
@@ -27,6 +34,13 @@ class Similarity:
 
     @property
     def data(self):
+        """
+        data ra bar migardanad.
+
+        baraye jologiri az kambode ram dar barname file ha ra dar ghale be file json zakhire mikonim va
+        dar disk zakhire va az roye disk mikhanim.
+        :return:
+        """
         file_name = join(PARENT_BASE_DIR, '.files', 'data.data.json')
         if isfile(file_name):
             debug(f'{file_name} file is exist.')
@@ -43,6 +57,13 @@ class Similarity:
 
     @property
     def tags(self):
+        """
+        tag ha ra bar migardanad.
+
+        baraye jologiri az kambode ram dar barname file ha ra dar ghale be file json zakhire mikonim va
+        dar disk zakhire va az roye disk mikhanim.
+        :return:
+        """
         if not self.exist_tags:
             return [], ''
         file_name = join(PARENT_BASE_DIR, '.files', 'tags.data.json')
@@ -61,6 +82,13 @@ class Similarity:
 
     @property
     def doc2vec_model(self):
+        """
+        model gensim.doc2vec amozesh dide shude ra bar migardanad.
+
+        baraye jologiri az kambode ram dar barname file ha ra dar ghale be file json zakhire mikonim va
+        dar disk zakhire va az roye disk mikhanim.
+        :return:
+        """
         file_name = join(PARENT_BASE_DIR, '.files/model.model')
         if isfile(file_name):
             mdl = gensim_document_to_vector.load(file_name)
@@ -84,6 +112,11 @@ class Similarity:
         return spatial.distance.cosine(doc_vec_1, doc_vec_2)
 
     def _load_data(self, data_path: str = None):
+        """
+
+        :param data_path: masire dade ha.
+        :return:
+        """
         file_name = join(PARENT_BASE_DIR, '.files', 'data.data.json')
         if isfile(file_name):
             data = self.data
@@ -107,6 +140,11 @@ class Similarity:
         return data
 
     def _load_tags(self, data_path: str = None):
+        """
+
+        :param data_path: masire tag ha
+        :return:
+        """
         if not self.exist_tags:
             tags = self.tags
             return tags[0]
@@ -132,19 +170,57 @@ class Similarity:
 
     def _documents2vectors(
             self,
-            dm=1,
-            vector_size=2 ** 7,
-            window=2 ** 3,
-            alpha=2 ** -6,
-            min_alpha=2 ** -11,
-            min_count=3,
-            workers=2 ** 2,
-            epochs=2 ** 7,
-            dm_mean=0,
-            dm_concat=0,
-            dm_tag_count=2 ** 5,
-            dbow_words=1,
+            dm: int = 1,
+            vector_size: int = 2 ** 7,
+            window: int = 2 ** 3,
+            alpha: float = 2 ** -6,
+            min_alpha: float = 2 ** -11,
+            min_count: int = 3,
+            workers: int = 2 ** 2,
+            epochs: int = 2 ** 7,
+            dm_mean: int = 0,
+            dm_concat: int = 0,
+            dm_tag_count: int = 2 ** 5,
+            dbow_words: int = 1,
     ):
+        """
+        Class for training, using and evaluating neural networks described in
+        `Distributed Representations of Sentences and Documents <http://arxiv.org/abs/1405.4053v2>`_.
+        :param dm: {1,0}, optional
+            Defines the training algorithm. If `dm=1`, 'distributed memory' (PV-DM) is used.
+            Otherwise, `distributed bag of words` (PV-DBOW) is employed.
+        vector_size : int, optional
+            Dimensionality of the feature vectors.
+        :param vector_size: int, optional
+            Dimensionality of the feature vectors.
+        :param window: int, optional
+            The maximum distance between the current and predicted word within a sentence.
+        :param alpha: float, optional
+            The initial learning rate.
+        :param min_alpha: float, optional
+            Learning rate will linearly drop to `min_alpha` as training progresses.
+        :param min_count: int, optional
+            Ignores all words with total frequency lower than this.
+        :param workers: int, optional
+            Use these many worker threads to train the model (=faster training with multicore machines).
+        :param epochs: int, optional
+            Number of iterations (epochs) over the corpus. Defaults to 10 for Doc2Vec.
+        :param dm_mean: {1,0}, optional
+            If 0 , use the sum of the context word vectors. If 1, use the mean.
+            Only applies when `dm` is used in non-concatenative mode.
+        :param dm_concat: {1,0}, optional
+            If 1, use concatenation of context vectors rather than sum/average;
+            Note concatenation results in a much-larger model, as the input
+            is no longer the size of one (sampled or arithmetically combined) word vector, but the
+            size of the tag(s) and all words in the context strung together.
+        :param dm_tag_count: int, optional
+            Expected constant number of document tags per document, when using
+            dm_concat mode.
+        :param dbow_words: {1,0}, optional
+            If set to 1 trains word-vectors (in skip-gram fashion) simultaneous with DBOW
+            doc-vector training; If 0, only trains doc-vectors (faster).
+        :return:
+        """
 
         file_name = join(PARENT_BASE_DIR, '.files/model.model')
         if isfile(file_name):
